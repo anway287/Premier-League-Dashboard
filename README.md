@@ -142,16 +142,6 @@ def test_full_pipeline_with_notifications(hermetic: HermeticEnv):
     assert hermetic.sns.messages_of_type("MatchEnded")[0]["result"] == "WIN"
 ```
 
-**Isolation guarantees:**
-- Unique S3 bucket + DynamoDB table name per test (UUID-scoped)
-- Fresh `MockS3Client` — no objects carried over between tests
-- Fresh `MockDynamoClient` — zero items at start of each test
-- Fresh `MockNotificationClient` — empty message log
-- `SportsAPISimulator` call log reset per test
-
-Tests run in any order, in parallel (`make test-parallel`), and never affect each other.
-
----
 
 ## Terraform environment
 
