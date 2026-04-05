@@ -9,12 +9,12 @@ A production-grade hermetic integration test framework built around a **Premier 
 ## Dashboards
 
 ### ⚽ Sports Pipeline Dashboard
-*Live standings, match scores, goal feed, and top attacking teams — all driven by the hermetic pipeline.*
+*Live standings, match scores, goal feed, and top attacking teams*
 
 ![Sports Dashboard](screenshots/sports-dashboard.png)
 
 ### 📊 Grafana Test Metrics Dashboard
-*Real-time test pass rate, failure counts, slowest tests, and flakiness trends — auto-provisioned, no manual setup.*
+*Real-time test pass rate, failure counts, slowest tests*
 
 ![Grafana Dashboard](screenshots/grafana-dashboard.png)
 
@@ -56,7 +56,7 @@ make dashboard
 
 ---
 
-## Full stack with Grafana (requires Docker Desktop)
+## Full stack with Grafana
 
 ```bash
 # Start LocalStack + Prometheus + Grafana
@@ -72,7 +72,6 @@ python3 -m metrics.exporter
 open http://localhost:3000    # admin / admin
 ```
 
-The Grafana dashboard auto-provisions — no import needed.
 
 ---
 
@@ -160,7 +159,7 @@ Resources created per run: S3 bucket, DynamoDB table (with GSI), SQS queue + DLQ
 
 ## Sports data
 
-The `SportsAPISimulator` generates **38 gameweeks of Premier League** and **24 weeks of NBA** data using fixed random seeds — same results every run, no flakiness from live data.
+The `SportsAPISimulator` generates **38 gameweeks of Premier League** and **24 weeks of NBA** data using fixed random seeds.
 
 | League | Teams | Matches | Data |
 |--------|-------|---------|------|
