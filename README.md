@@ -1,8 +1,8 @@
-# Hermetic Integration Test Framework
+
 
 > **Python · pytest · Terraform · Grafana**
 
-A production-grade hermetic integration test framework built around a **Premier League & NBA sports data pipeline**. Every test runs in a fully isolated environment — fresh mock S3, DynamoDB, and SNS clients per test — so tests never share state, never hit a live API, and run in **under half a second**.
+A production-grade test framework built around a **Premier League & NBA sports data pipeline**. Every test runs in a fully isolated environment — fresh mock S3, DynamoDB, and SNS clients per test — so tests never share state, never hit a live API, and run in **under half a second**.
 
 ---
 
