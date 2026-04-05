@@ -1,0 +1,70 @@
+services:
+
+  localstack:
+    image: localstack/localstack:3.3
+    ports:
+      - "127.0.0.1:4566:4566"   # localhost only — not exposed to network
+    environment:
+      - SERVICES=s3,dynamodb,sns,sqs,iam
+      - DEBUG=0
+    volumes:
+      - localstack_data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  prometheus:
+    image: prom/prometheus:v2.51.1
+    ports:
+      - "127.0.0.1:9091:9090"   # localhost only
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.enable-lifecycle"
+      - "--web.listen-address=0.0.0.0:9090"
+    depends_on:
+      metrics-exporter:
+        condition: service_started
+
+  metrics-exporter:
+    image: python:3.11-slim
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: python -m metrics.exporter
+    ports:
+      - "127.0.0.1:8765:8765"   # localhost only
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8765/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  grafana:
+    image: grafana/grafana:10.3.3
+    ports:
+      - "127.0.0.1:3000:3000"   # localhost only
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_AUTH_ANONYMOUS_ENABLED=false          # no unauthenticated access
+      - GF_SECURITY_DISABLE_GRAVATAR=true
+      - GF_SECURITY_COOKIE_SECURE=false          # fine for localhost http
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/test_metrics.json
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/provisioning/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
+volumes:
+  localstack_data:
+  prometheus_data:
+  grafana_data:
